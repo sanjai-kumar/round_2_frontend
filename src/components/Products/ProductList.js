@@ -96,7 +96,7 @@ const ProductList = () => {
           <CardContent>
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary" gutterBottom>
-                🛍️ No products found
+                 No products found
               </Typography>
               <Typography variant="body2" color="text.secondary" mb={2}>
                 {categories.length === 0
