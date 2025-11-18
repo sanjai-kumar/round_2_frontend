@@ -14,6 +14,7 @@ import {
   FormControlLabel,
   Switch,
   Typography,
+  Alert,
 } from '@mui/material';
 import toast from 'react-hot-toast';
 import { productService } from '../../services/productService';
@@ -29,23 +30,13 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
   });
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
 
-  // ✅ FIX 1: Fetch categories ONLY ONCE when dialog opens
   useEffect(() => {
     if (open) {
-      // Only fetch if we don't have categories yet
-      if (categories.length === 0) {
-        fetchCategories();
-      }
-      setCategoriesLoaded(true);
-    } else {
-      setCategoriesLoaded(false);
+      fetchCategories();
     }
-  }, [open]); // ✅ Remove fetchCategories from dependency - prevents infinite loop
+  }, [open]);
 
-  // ✅ FIX 2: Set form data when product changes
-  // This is separate from category fetching to prevent re-renders
   useEffect(() => {
     if (product && open) {
       setFormData({
@@ -56,7 +47,6 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
       });
       setErrors({});
     } else if (open && !product) {
-      // Reset form for create mode
       setFormData({ name: '', price: '', categoryId: '', inStock: true });
       setErrors({});
     }
@@ -109,15 +99,15 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
 
       if (product) {
         await productService.update(product.id, payload);
-        toast.success('✅ Product updated successfully');
+        toast.success('Product updated successfully');
       } else {
         await productService.create(payload);
-        toast.success('✅ Product created successfully');
+        toast.success('Product created successfully');
       }
       onSuccess();
       onClose();
     } catch (error) {
-      toast.error(error.message || '❌ Operation failed');
+      toast.error(error.message || 'Operation failed');
     } finally {
       setSubmitting(false);
     }
@@ -126,11 +116,17 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ fontWeight: 600, fontSize: '1.25rem' }}>
-        {product ? '✏️ Edit Product' : '➕ Create New Product'}
+        {product ? ' Edit Product' : ' Create New Product'}
       </DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           <Box display="flex" flexDirection="column" gap={2} pt={1}>
+            {categories.length === 0 && (
+              <Alert severity="warning">
+                 No categories available. Please create a category first.
+              </Alert>
+            )}
+
             <TextField
               label="Product Name"
               name="name"
@@ -144,6 +140,7 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
               helperText={errors.name}
               size="small"
             />
+
             <TextField
               label="Price"
               name="price"
@@ -158,11 +155,13 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
               helperText={errors.price}
               size="small"
             />
-            <FormControl 
-              fullWidth 
-              required 
-              size="small" 
+
+            <FormControl
+              fullWidth
+              required
+              size="small"
               error={!!errors.categoryId}
+              disabled={categories.length === 0}
             >
               <InputLabel>Category</InputLabel>
               <Select
@@ -193,8 +192,7 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
               )}
             </FormControl>
 
-            {/* Show category info if editing */}
-            {product && (
+            {product && product.category && (
               <Box
                 sx={{
                   p: 1.5,
@@ -203,10 +201,6 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
                   border: '1px solid #90caf9',
                 }}
               >
-                <Typography variant="caption" color="textSecondary">
-                  Current Category ID: {product.categoryId}
-                </Typography>
-                <br />
                 <Typography variant="caption" color="textSecondary">
                   Current Category: {product.category?.name || 'Not set'}
                 </Typography>
@@ -222,7 +216,7 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
                   color="primary"
                 />
               }
-              label={formData.inStock ? '✅ In Stock' : '❌ Out of Stock'}
+              label={formData.inStock ? ' In Stock' : ' Out of Stock'}
               sx={{ mt: 1 }}
             />
           </Box>
@@ -239,7 +233,7 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
               backgroundImage: 'linear-gradient(45deg, #1976d2 0%, #1565c0 100%)',
             }}
           >
-            {submitting ? '⏳ Saving...' : product ? '💾 Update' : '➕ Create'}
+            {submitting ? ' Saving...' : product ? ' Update' : ' Create'}
           </Button>
         </DialogActions>
       </form>

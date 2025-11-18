@@ -66,15 +66,15 @@ const CategoryForm = ({ open, onClose, category, onSuccess }) => {
     try {
       if (category) {
         await categoryService.update(category.id, formData);
-        toast.success('✅ Category updated successfully');
+        toast.success('Category updated successfully');
       } else {
         await categoryService.create(formData);
-        toast.success('✅ Category created successfully');
+        toast.success('Category created successfully');
       }
       onSuccess();
       onClose();
     } catch (error) {
-      toast.error(error.message || '❌ Operation failed');
+      toast.error(error.message || 'Operation failed');
     } finally {
       setSubmitting(false);
     }
@@ -83,7 +83,7 @@ const CategoryForm = ({ open, onClose, category, onSuccess }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ fontWeight: 600, fontSize: '1.25rem' }}>
-        {category ? '✏️ Edit Category' : '➕ Create New Category'}
+        {category ? ' Edit Category' : ' Create New Category'}
       </DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
@@ -128,7 +128,7 @@ const CategoryForm = ({ open, onClose, category, onSuccess }) => {
               backgroundImage: 'linear-gradient(45deg, #1976d2 0%, #1565c0 100%)',
             }}
           >
-            {submitting ? '⏳ Saving...' : category ? '💾 Update' : '➕ Create'}
+            {submitting ? ' Saving...' : category ? ' Update' : ' Create'}
           </Button>
         </DialogActions>
       </form>

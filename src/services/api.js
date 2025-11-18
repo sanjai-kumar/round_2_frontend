@@ -10,7 +10,6 @@ const apiClient = axios.create({
   },
 });
 
-// Add API key to write operations
 apiClient.interceptors.request.use((config) => {
   if (['post', 'put', 'delete'].includes(config.method.toLowerCase())) {
     config.headers['x-api-key'] = API_KEY;
@@ -18,7 +17,6 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor for error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {

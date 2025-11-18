@@ -83,7 +83,7 @@ const CategoryList = () => {
           <CardContent>
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary" gutterBottom>
-                📭 No categories found
+                No categories found
               </Typography>
               <Typography variant="body2" color="text.secondary" mb={2}>
                 Create your first category to get started
@@ -163,7 +163,7 @@ const CategoryList = () => {
                       overflow: 'hidden',
                     }}
                   >
-                    {category.description || '📝 No description provided'}
+                    {category.description || 'No description provided'}
                   </Typography>
 
                   <Box display="flex" gap={1} flexWrap="wrap">
