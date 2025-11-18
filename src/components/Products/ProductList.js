@@ -8,12 +8,7 @@ import {
   IconButton,
   Grid,
   Chip,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Stack,
-  Paper,
 } from '@mui/material';
 import { Add, Edit, Delete, CheckCircle, Cancel } from '@mui/icons-material';
 import toast from 'react-hot-toast';
@@ -24,26 +19,26 @@ import ConfirmDialog from '../Common/ConfirmDialog';
 import LoadingSpinner from '../Common/LoadingSpinner';
 
 const ProductList = () => {
-  const { products, categories, fetchProducts, loading } = useAppContext();
+  const { products, categories, fetchProducts, fetchCategories, loading } = useAppContext();
   const [formOpen, setFormOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [deleteDialog, setDeleteDialog] = useState({ open: false, product: null });
-  const [filters, setFilters] = useState({ categoryId: '', inStock: '' });
 
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+    fetchCategories(); // Fetch categories too
+  }, [fetchProducts, fetchCategories]);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    const newFilters = { ...filters, [name]: value };
-    setFilters(newFilters);
-
-    const apiFilters = {};
-    if (newFilters.categoryId) apiFilters.categoryId = newFilters.categoryId;
-    if (newFilters.inStock !== '') apiFilters.inStock = newFilters.inStock === 'true';
-
-    fetchProducts(apiFilters);
+  // ✅ NEW: Check if categories exist before opening form
+  const handleAddProduct = () => {
+    if (categories.length === 0) {
+      toast.error('⚠️ Please create a category first before adding products!', {
+        duration: 4000,
+        icon: '📋',
+      });
+      return;
+    }
+    setFormOpen(true);
   };
 
   const handleEdit = (product) => {
@@ -87,7 +82,7 @@ const ProductList = () => {
         <Button
           variant="contained"
           startIcon={<Add />}
-          onClick={() => setFormOpen(true)}
+          onClick={handleAddProduct}  // ✅ Use new handler
           sx={{
             backgroundImage: 'linear-gradient(45deg, #1976d2 0%, #1565c0 100%)',
             boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
@@ -102,17 +97,17 @@ const ProductList = () => {
           <CardContent>
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary" gutterBottom>
-                No products found
+                🛍️ No products found
               </Typography>
               <Typography variant="body2" color="text.secondary" mb={2}>
-                {filters.categoryId || filters.inStock
-                  ? 'Try adjusting your filters'
+                {categories.length === 0
+                  ? 'Please create a category first'
                   : 'Create your first product to get started'}
               </Typography>
               <Button
                 variant="outlined"
                 startIcon={<Add />}
-                onClick={() => setFormOpen(true)}
+                onClick={handleAddProduct}  // ✅ Use new handler
               >
                 Create Product
               </Button>
