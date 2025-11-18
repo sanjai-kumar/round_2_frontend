@@ -26,13 +26,12 @@ const ProductList = () => {
 
   useEffect(() => {
     fetchProducts();
-    fetchCategories(); // Fetch categories too
+    fetchCategories();
   }, [fetchProducts, fetchCategories]);
 
-  // ✅ NEW: Check if categories exist before opening form
   const handleAddProduct = () => {
     if (categories.length === 0) {
-      toast.error('⚠️ Please create a category first before adding products!', {
+      toast.error(' Please create a category first before adding products!', {
         duration: 4000,
         icon: '📋',
       });
@@ -82,7 +81,7 @@ const ProductList = () => {
         <Button
           variant="contained"
           startIcon={<Add />}
-          onClick={handleAddProduct}  // ✅ Use new handler
+          onClick={handleAddProduct} 
           sx={{
             backgroundImage: 'linear-gradient(45deg, #1976d2 0%, #1565c0 100%)',
             boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
@@ -107,7 +106,7 @@ const ProductList = () => {
               <Button
                 variant="outlined"
                 startIcon={<Add />}
-                onClick={handleAddProduct}  // ✅ Use new handler
+                onClick={handleAddProduct}  
               >
                 Create Product
               </Button>
