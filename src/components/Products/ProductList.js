@@ -33,7 +33,6 @@ const ProductList = () => {
     if (categories.length === 0) {
       toast.error(' Please create a category first before adding products!', {
         duration: 4000,
-        icon: '📋',
       });
       return;
     }

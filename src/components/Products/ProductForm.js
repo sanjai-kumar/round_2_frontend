@@ -21,7 +21,7 @@ import { productService } from '../../services/productService';
 import { useAppContext } from '../../context/AppContext';
 
 const ProductForm = ({ open, onClose, product, onSuccess }) => {
-  const { categories, fetchCategories } = useAppContext();
+  const { categories } = useAppContext(); 
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -31,11 +31,6 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    if (open) {
-      fetchCategories();
-    }
-  }, [open]);
 
   useEffect(() => {
     if (product && open) {
@@ -99,15 +94,15 @@ const ProductForm = ({ open, onClose, product, onSuccess }) => {
 
       if (product) {
         await productService.update(product.id, payload);
-        toast.success('Product updated successfully');
+        toast.success(' Product updated successfully');
       } else {
         await productService.create(payload);
-        toast.success('Product created successfully');
+        toast.success(' Product created successfully');
       }
       onSuccess();
       onClose();
     } catch (error) {
-      toast.error(error.message || 'Operation failed');
+      toast.error(error.message || ' Operation failed');
     } finally {
       setSubmitting(false);
     }
